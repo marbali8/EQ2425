@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 # https://docs.opencv.org/master/da/df5/tutorial_py_sift_intro.html
 # https://docs.opencv.org/3.4.9/d5/d3c/classcv_1_1xfeatures2d_1_1SIFT.html#a865f4dee68820970872c46241437f9cd
 
-def sift(img, save = None, show = False):
+def sift_feature(img, save = None, show = False):
 
     ## open image
     # img = cv2.imread(imgPath) #bgr (for cv2)
