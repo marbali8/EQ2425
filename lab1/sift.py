@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 # https://docs.opencv.org/master/da/df5/tutorial_py_sift_intro.html
 # https://docs.opencv.org/3.4.9/d5/d3c/classcv_1_1xfeatures2d_1_1SIFT.html#a865f4dee68820970872c46241437f9cd
 
-def siftFeatures(img, save = None, show = False):
+def siftFeatures(img):
 
     ## open image
     # img = cv2.imread(imgPath) #bgr (for cv2)
@@ -17,6 +17,12 @@ def siftFeatures(img, save = None, show = False):
     ## search keypoints
     sift = cv2.SIFT_create(nfeatures = 300)
     kp, desc = sift.detectAndCompute(img, None)
+
+    return kp, desc
+
+def plotSift(img, kp, save = None):
+
+    img_rgb = img[:, :, ::-1] #rgb (for plt)
 
     ## draw keypoints
 
@@ -29,8 +35,8 @@ def siftFeatures(img, save = None, show = False):
     # out = cv2.drawKeypoints(img, kp, aux_img)
     # cv2.imwrite('./kp.jpg', out)
 
-    # draw them clearer
-    implot = plt.imshow(img_rgb)
+    # plt.figure()
+    fig = plt.imshow(img_rgb)
     plt.axis('off')
     plt.tight_layout(pad = 0)
     c = [(random.random(), random.random(), random.random()) for k in kp]
@@ -40,8 +46,3 @@ def siftFeatures(img, save = None, show = False):
     if isinstance(save, str):
         plt.savefig(save) # , dpi = 1
         print('sift saved to' + save)
-
-    if show:
-        plt.show()
-
-    return kp, desc
