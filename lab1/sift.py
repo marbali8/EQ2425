@@ -40,7 +40,10 @@ def plotSift(img, kp, save = None):
     plt.axis('off')
     plt.tight_layout(pad = 0)
     c = [(random.random(), random.random(), random.random()) for k in kp]
-    plt.scatter([k.pt[0] for k in kp], [k.pt[1] for k in kp], s = 9, color = c)
+    if isinstance(kp[0], cv2.KeyPoint):
+        plt.scatter([k.pt[0] for k in kp], [k.pt[1] for k in kp], s = 9, color = c)
+    else:
+        plt.scatter(kp[:, 0], kp[:, 1], s = 9, color = c)
     # plt.gcf().set_size_inches(img.shape[1], img.shape[0])
 
     if isinstance(save, str):
@@ -52,11 +55,11 @@ def newPlotSift(img, kp, save = None, c='black'):
 
     img_rgb = img[:, :, ::-1] #rgb (for plt)
 
-  
+
     fig = plt.imshow(img_rgb)
     plt.axis('off')
     plt.tight_layout(pad = 0)
-    
+
     plt.scatter([k[0] for k in kp], [k[1] for k in kp], s = 9, color = c)
     # plt.gcf().set_size_inches(img.shape[1], img.shape[0])
 
@@ -69,7 +72,7 @@ def newNewPlotSift(img, kp, save = None, c='black'):
 
     img_rgb = img[:, :, ::-1] #rgb (for plt)
 
-  
+
     fig = plt.imshow(img_rgb)
     plt.axis('off')
     plt.tight_layout(pad = 0)
@@ -80,7 +83,7 @@ def newNewPlotSift(img, kp, save = None, c='black'):
         else:
             if (np.all(np.isin(kp[i],kp[0:i]))):
                 s[np.where(np.all(kp[i] == kp[0:i],axis=1))[0][0]]=50
-    
+
     plt.scatter([k[0] for k in kp], [k[1] for k in kp], s , color = c)
     # plt.gcf().set_size_inches(img.shape[1], img.shape[0])
 
