@@ -46,3 +46,20 @@ def plotSift(img, kp, save = None):
     if isinstance(save, str):
         plt.savefig(save) # , dpi = 1
         print('sift saved to' + save)
+
+
+def newPlotSift(img, kp, save = None, c='black'):
+
+    img_rgb = img[:, :, ::-1] #rgb (for plt)
+
+  
+    fig = plt.imshow(img_rgb)
+    plt.axis('off')
+    plt.tight_layout(pad = 0)
+    
+    plt.scatter([k[0] for k in kp], [k[1] for k in kp], s = 9, color = c)
+    # plt.gcf().set_size_inches(img.shape[1], img.shape[0])
+
+    if isinstance(save, str):
+        plt.savefig(save) # , dpi = 1
+        print('sift saved to' + save)
