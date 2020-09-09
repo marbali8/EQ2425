@@ -7,14 +7,6 @@ from scipy import ndimage
 import collections
 from sift import *
 
-def checkDistance(point1, point2):
-
-    th = 2
-    # print(np.linalg.norm(point1 - point2))
-    if np.abs(point1[0] - point2[0]) <= th and np.abs(point1[1] - point2[1]) <= th:
-        return distance.euclidean(point1, point2)
-    return -1
-
 def rotateImage(img, deg, show = False):
 
     # shape1 = img.shape[0]
