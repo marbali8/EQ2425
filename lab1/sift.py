@@ -2,11 +2,12 @@ import os
 import cv2
 import random
 import matplotlib.pyplot as plt
+import numpy as np
 
 # https://docs.opencv.org/master/da/df5/tutorial_py_sift_intro.html
 # https://docs.opencv.org/3.4.9/d5/d3c/classcv_1_1xfeatures2d_1_1SIFT.html#a865f4dee68820970872c46241437f9cd
 
-def siftFeatures(img):
+def siftFeatures(img, nfeatures = 300):
 
     ## open image
     # img = cv2.imread(imgPath) #bgr (for cv2)
@@ -15,7 +16,7 @@ def siftFeatures(img):
     # print(img.shape)
 
     ## search keypoints
-    sift = cv2.SIFT_create(nfeatures = 30)
+    sift = cv2.SIFT_create(nfeatures = nfeatures)
     kp, desc = sift.detectAndCompute(img, None)
 
     return kp, desc
@@ -51,7 +52,7 @@ def plotSift(img, kp, save = None):
         print('sift saved to' + save)
 
 
-def newPlotSift(img, kp, save = None, c='black'):
+def newPlotSift(img, kp, save = None, c = 'black'):
 
     img_rgb = img[:, :, ::-1] #rgb (for plt)
 
@@ -67,8 +68,8 @@ def newPlotSift(img, kp, save = None, c='black'):
         plt.savefig(save) # , dpi = 1
         print('sift saved to' + save)
 
-#Resistent to overlapping
-def newNewPlotSift(img, kp, save = None, c='black'):
+# Resistent to overlapping
+def newNewPlotSift(img, kp, save = None, c = 'black'):
 
     img_rgb = img[:, :, ::-1] #rgb (for plt)
 
@@ -82,9 +83,9 @@ def newNewPlotSift(img, kp, save = None, c='black'):
             continue
         else:
             if (np.all(np.isin(kp[i],kp[0:i]))):
-                s[np.where(np.all(kp[i] == kp[0:i],axis=1))[0][0]]=50
+                s[np.where(np.all(kp[i] == kp[0:i],axis=1))[0][0]] = 50
 
-    plt.scatter([k[0] for k in kp], [k[1] for k in kp], s , color = c)
+    plt.scatter([k[0] for k in kp], [k[1] for k in kp], s, color = c)
     # plt.gcf().set_size_inches(img.shape[1], img.shape[0])
 
     if isinstance(save, str):
