@@ -15,7 +15,7 @@ def siftFeatures(img):
     # print(img.shape)
 
     ## search keypoints
-    sift = cv2.SIFT_create(nfeatures = 300)
+    sift = cv2.SIFT_create(nfeatures = 30)
     kp, desc = sift.detectAndCompute(img, None)
 
     return kp, desc
@@ -58,6 +58,30 @@ def newPlotSift(img, kp, save = None, c='black'):
     plt.tight_layout(pad = 0)
     
     plt.scatter([k[0] for k in kp], [k[1] for k in kp], s = 9, color = c)
+    # plt.gcf().set_size_inches(img.shape[1], img.shape[0])
+
+    if isinstance(save, str):
+        plt.savefig(save) # , dpi = 1
+        print('sift saved to' + save)
+
+#Resistent to overlapping
+def newNewPlotSift(img, kp, save = None, c='black'):
+
+    img_rgb = img[:, :, ::-1] #rgb (for plt)
+
+  
+    fig = plt.imshow(img_rgb)
+    plt.axis('off')
+    plt.tight_layout(pad = 0)
+    s= [10]*kp.shape[0]
+    for i, point in enumerate(kp):
+        if i==0:
+            continue
+        else:
+            if (np.all(np.isin(kp[i],kp[0:i]))):
+                s[np.where(np.all(kp[i] == kp[0:i],axis=1))[0][0]]=50
+    
+    plt.scatter([k[0] for k in kp], [k[1] for k in kp], s , color = c)
     # plt.gcf().set_size_inches(img.shape[1], img.shape[0])
 
     if isinstance(save, str):

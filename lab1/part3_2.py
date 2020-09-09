@@ -9,6 +9,7 @@ from scipy import ndimage
 
 import collections
 from sift import *
+from scipy import spatial
 
 def checkDistance(point1, point2):
 
@@ -43,6 +44,8 @@ plotSift(img2,kp2)
 '''
 kp1 = np.array([[kp.pt[0], kp.pt[1]] for kp in kp1])
 kp2 = np.array([[kp.pt[0], kp.pt[1]] for kp in kp2])
+dp1_nonSorted = np.copy(dp1)
+dp2_nonSorted = dp2
 [x.sort() for x in dp1 ]
 [x.sort() for x in dp2 ]
 
@@ -53,29 +56,25 @@ TH = 25
 count = 0
 matched = []
 matched_hist = []
-for i, point1 enumerate(dp1):
-    for coord2, point2 in enumerate(dp2):
-        if distance.euclidean(point1, point2) <= TH:
-            count+=1
-            matched.append([coord1,coord2])
-            matched_hist.append([point1,point2])
-            np.delete(kp2,coord2)
-            np.delete(dp2,point2)
-            break
-            
 
 
-print(count)
-matched = np.array(matched)
-c = [(random.random(), random.random(), random.random()) for k in matched]
-plt.figure()
-newPlotSift(img1,matched[:,0],None,c)
-plt.figure()
-newPlotSift(img2,matched[:,1],None,c)
+dList1 = dp1.tolist();
+tree = spatial.KDTree(dList1)
 
+
+dList2 = dp2.tolist()
+
+_, idx = tree.query(dList2)
+
+
+
+
+c = [(random.random(), random.random(), random.random()) for k in range(kp1.shape[0])]
 plt.figure()
-plt.bar(range(128), matched_hist[0][0])
-plt.bar(range(128), matched_hist[0][1])
+newNewPlotSift(img1,kp1[idx],None,c)
+plt.figure()
+newNewPlotSift(img2,kp2,None,c)
+
 plt.show()
 
 
