@@ -36,7 +36,7 @@ def plotSift(img, kp, save = None):
     # out = cv2.drawKeypoints(img, kp, aux_img)
     # cv2.imwrite('./kp.jpg', out)
 
-    # plt.figure()
+    plt.figure()
     fig = plt.imshow(img_rgb)
     plt.axis('off')
     plt.tight_layout(pad = 0)
