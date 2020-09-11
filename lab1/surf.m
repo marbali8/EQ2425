@@ -1,5 +1,5 @@
-function [dp1,kp1] = surf()
-img1_rgb = imread('./data1/obj1.JPG');
+function [dp1,kp1] = surf(img_path)
+img1_rgb = imread(img_path);
 img1 = rgb2gray(img1_rgb);
 kp1 = detectSURFFeatures(img1);
 [a, b] = extractFeatures(img1, kp1.selectStrongest(300));
