@@ -36,7 +36,7 @@ def plotSift(img, kp, save = None):
     # out = cv2.drawKeypoints(img, kp, aux_img)
     # cv2.imwrite('./kp.jpg', out)
 
-    # plt.figure()
+    plt.figure()
     fig = plt.imshow(img_rgb)
     plt.axis('off')
     plt.tight_layout(pad = 0)
@@ -91,3 +91,20 @@ def newNewPlotSift(img, kp, save = None, c = 'black'):
     if isinstance(save, str):
         plt.savefig(save) # , dpi = 1
         print('sift saved to' + save)
+
+def plotSift_2kp(img, kp1, kp2, c = None):
+
+    img_rgb = img[:, :, ::-1] #rgb (for plt)
+
+    plt.figure()
+    fig = plt.imshow(img_rgb)
+    plt.axis('off')
+    plt.tight_layout(pad = 0)
+    if c == None:
+        c = [(random.random(), random.random(), random.random()) for k in kp1]
+    if isinstance(kp1[0], cv2.KeyPoint):
+        plt.scatter([k.pt[0] for k in kp1], [k.pt[1] for k in kp1], s = 9, color = c)
+        plt.scatter([k.pt[0] for k in kp2], [k.pt[1] for k in kp2], color = 'black', s = 14, marker = 'x')
+    else:
+        plt.scatter(kp1[:, 0], kp1[:, 1], s = 9, color = c)
+        plt.scatter(kp2[:, 0], kp2[:, 1], color = 'black', s = 14, marker = 'x')
