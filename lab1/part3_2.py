@@ -46,24 +46,15 @@ kp1 = np.array([[kp.pt[0], kp.pt[1]] for kp in kp1])
 kp2 = np.array([[kp.pt[0], kp.pt[1]] for kp in kp2])
 dp1_nonSorted = np.copy(dp1)
 dp2_nonSorted = dp2
-[x.sort() for x in dp1 ]
-[x.sort() for x in dp2 ]
+#[x.sort() for x in dp1 ]
+#[x.sort() for x in dp2 ]
 
-#60 100%
 
-TH = 25
-
-count = 0
-matched = []
-matched_hist = []
 
 
 dList1 = dp1.tolist();
 tree = spatial.KDTree(dList1)
-
-
 dList2 = dp2.tolist()
-
 _, idx = tree.query(dList2)
 
 
