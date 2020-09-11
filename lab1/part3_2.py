@@ -71,4 +71,3 @@ plt.show()
 
 # out = gray1
 # img_1 = cv2.drawKeypoints(gray1,keypoints_1, out)
-

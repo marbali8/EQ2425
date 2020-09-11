@@ -11,7 +11,7 @@ from surf import *
 import collections
 from sift import *
 from scipy import spatial
-import time 
+import time
 def checkDistance(point1, point2):
 
     th = 2
@@ -32,9 +32,9 @@ def rotateImage(img, deg, show = False):
     return img2
 
 
-img1 = cv2.imread('./data1/intruder4.png', cv2.IMREAD_COLOR)
+img1 = cv2.imread('./data1/obj1.JPG', cv2.IMREAD_COLOR)
 
-img2 = cv2.imread('./data1/intruder3.png', cv2.IMREAD_COLOR)
+img2 = cv2.imread('./data1/obj2.JPG', cv2.IMREAD_COLOR)
 #img2 = rotateImage(img1,15,False)
 
 kp1, dp1 = siftFeatures(img1)
@@ -84,4 +84,3 @@ plt.show()
 
 # out = gray1
 # img_1 = cv2.drawKeypoints(gray1,keypoints_1, out)
-

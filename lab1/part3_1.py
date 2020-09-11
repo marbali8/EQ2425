@@ -11,7 +11,7 @@ from sift import *
 
 img1 = cv2.imread('./data1/obj1.JPG', cv2.IMREAD_COLOR)
 
-img2 = cv2.imread('./data1/logo.jpg', cv2.IMREAD_COLOR)
+img2 = cv2.imread('./data1/obj2.JPG', cv2.IMREAD_COLOR)
 #img2 = rescaleImage(img1,0.9, show = False)
 #img2 = rotateImage(img1,90,show= False)
 
