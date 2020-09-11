@@ -38,8 +38,9 @@ def rescaleImage(img, scaleFactor, show = False):
 img1 = cv2.imread('./data1/obj1.JPG', cv2.IMREAD_COLOR)
 kp1, dp1 = siftFeatures(img1)
 kp1_s, dp1_s = surfFeatures('./data1/obj1.JPG')
-plotSift(img1, kp1)
-plotSift(img1, kp1_s)
+# plotSift(img1, kp1)
+# plotSift(img1, kp1_s)
+gray = np.ones(img1.shape)*211/255
 kp1 = np.array([[kp.pt[0], kp.pt[1]] for kp in kp1])
 # kp1_s = np.array([[kp.pt[0], kp.pt[1]] for kp in kp1_s])
 
@@ -70,6 +71,12 @@ for teta in np.arange(0, 360+15, 15):
     R = np.array([[np.cos(teta_r), -np.sin(teta_r)], [np.sin(teta_r), np.cos(teta_r)]])
     kp_s = R @ kp2_s.T + np.array([img1.shape[1]/2, img1.shape[0]/2]).T.reshape((-1, 1))
 
+    plotSift(img1, kp) # plotting rescaled kps in original pic
+    plotSift(img1, kp_s) # plotting rescaled kps in original pic
+
+    matched_idx = []
+    not_matched_idx = []
+
     count = 0 # counting matches
     for i, point1 in enumerate(kp.T):
         best = (-1, distance.euclidean([0, 0], [img1.shape[1], img1.shape[0]])) # (index, distance)
@@ -86,6 +93,16 @@ for teta in np.arange(0, 360+15, 15):
         # print("")
         if best[0] != -1:
             np.delete(kp1_, best[0])
+            matched_idx.append(i)
+        else:
+            not_matched_idx.append(i)
+
+    aux1 = kp.T[matched_idx]
+    aux2 = kp.T[not_matched_idx]
+    plotSift_2kp(gray, aux1, aux2, c = 'orange')
+
+    matched_idx = []
+    not_matched_idx = []
 
     count_s = 0 # counting matches
     for i, point1 in enumerate(kp_s.T):
@@ -103,6 +120,14 @@ for teta in np.arange(0, 360+15, 15):
         # print("")
         if best[0] != -1:
             np.delete(kp1_s_, best[0])
+            matched_idx.append(i)
+        else:
+            not_matched_idx.append(i)
+
+    aux1 = kp_s.T[matched_idx]
+    aux2 = kp_s.T[not_matched_idx]
+    plotSift_2kp(gray, aux1, aux2, c = 'orange')
+
 
     y.append(count / len(kp1))
     y_s.append(count_s / len(kp1_s))
@@ -143,6 +168,10 @@ for scaleFactor in range(0, 8+1):
     kp = kp2 / 1.2**scaleFactor
     kp_s = kp2_s / 1.2**scaleFactor
     plotSift(img1, kp) # plotting rescaled kps in original pic
+    plotSift(img1, kp_s) # plotting rescaled kps in original pic
+
+    matched_idx = []
+    not_matched_idx = []
 
     count = 0 # counting matches
     for i, point1 in enumerate(kp):
@@ -160,6 +189,16 @@ for scaleFactor in range(0, 8+1):
         # print("")
         if best[0] != -1:
             np.delete(kp1_, best[0])
+            matched_idx.append(i)
+        else:
+            not_matched_idx.append(i)
+
+    aux1 = kp[matched_idx]
+    aux2 = kp[not_matched_idx]
+    plotSift_2kp(gray, aux1, aux2, c = 'orange')
+
+    matched_idx = []
+    not_matched_idx = []
 
     count_s = 0 # counting matches
     for i, point1 in enumerate(kp_s):
@@ -177,6 +216,13 @@ for scaleFactor in range(0, 8+1):
         # print("")
         if best[0] != -1:
             np.delete(kp1_s_, best[0])
+            matched_idx.append(i)
+        else:
+            not_matched_idx.append(i)
+
+    aux1 = kp_s[matched_idx]
+    aux2 = kp_s[not_matched_idx]
+    plotSift_2kp(gray, aux1, aux2, c = 'orange')
 
     y.append(count / len(kp1))
     y_s.append(count_s / len(kp1_s))
