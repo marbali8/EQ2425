@@ -32,10 +32,9 @@ for i in np.arange(n_obj)+1:
 
             img = cv2.imread(path, cv2.IMREAD_COLOR)
             _, dp = siftFeatures(img)
-            dps.append(dp)
+            dps.append(dp[:300])
 
         np.save(f, np.array(dps))
-    print(i, end = ' ')
 
 # client
 c_path = 'Data2/client/'
@@ -49,6 +48,4 @@ for i in np.arange(n_obj)+1:
 
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         _, dp = siftFeatures(img)
-        np.save(f, dp)
-
-    print(i, end = ' ')
+        np.save(f, dp[:300])
