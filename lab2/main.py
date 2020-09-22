@@ -8,6 +8,7 @@ Created on Mon Sep 21 16:41:15 2020
 import numpy as np
 from sklearn.cluster import KMeans
 import time 
+import os
 
 def recursive(features, idx_features, b, depth, n, numbers_of_objects):
     
@@ -59,13 +60,34 @@ def link_word_to_object(Tree,data):
         
 
 
+def ReadData(path):
+    data = []
+    for file in os.listdir(path):
+        tmp=np.load(path+file, allow_pickle=True)
+        #print(file,tmp.shape)
+        tmp = tmp.reshape(-1,tmp.shape[2])
+        data.append(tmp)
+    return np.array(data)
 
-sift_list = np.random.randint(0,500,(50,300*3, 128))
-tmp_data = sift_list.reshape(-1,sift_list.shape[2])
+
+#sift_list = np.random.randint(0,500,(50,300*3, 128))
+'''
+data= ReadData("Data2/server/sift/")
+number_of_objects=data.shape[0]
+sift_list = np.concatenate( data, axis=0 )
 
 t1 = time.time()
-dList= hi_kmeans(tmp_data,2,3,50)
+dList= hi_kmeans(sift_list,2,3,number_of_objects)
 t2 = time.time()
 print(t2-t1)
-link_word_to_object(dList,sift_list)
+link_word_to_object(dList,data)
 print(time.time()-t2)
+'''
+tree = np.load("Data2/testTree.npy",allow_pickle=True).tolist()
+leafs = list(filter(lambda x: len(x['children'])==0,tree))
+f = np.array(list(map(lambda x: x['objects'] , leafs)))
+F = np.array(list(map(lambda x: x.shape[0], data) ))
+K = np.array(list(map(lambda x: np.sum(x!=0), f) ))
+
+
+W = f/F * np.log2(K/number_of_objects).reshape(-1,1)
