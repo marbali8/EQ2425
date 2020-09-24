@@ -3,7 +3,7 @@ import os
 import glob
 import numpy as np
 
-def siftFeatures(img, nfeatures = 300):
+def siftFeatures(img, nfeatures = 1000):
 
     ## open image
     # img = cv2.imread(imgPath) #bgr (for cv2)
@@ -19,22 +19,22 @@ def siftFeatures(img, nfeatures = 300):
 n_obj = 50
 
 # server
-# s_path = 'Data2/server/'
-# os.makedirs(s_path + 'sift', exist_ok = True)
-#
-# for i in np.arange(n_obj)+1:
-#
-#     img_paths = glob.glob(s_path + 'obj' + str(i) + '_*.JPG') # all len = 3 but 26 (2), 37 (4), 38 (2)
-#
-#     with open(s_path + 'sift/obj' + str(i) + '.npy', 'wb') as f:
-#         dps = []
-#         for path in img_paths:
-#
-#             img = cv2.imread(path, cv2.IMREAD_COLOR)
-#             _, dp = siftFeatures(img)
-#             dps.append(dp[:300])
-#
-#         np.save(f, np.array(dps))
+s_path = 'Data2/server/'
+os.makedirs(s_path + 'sift', exist_ok = True)
+
+for i in np.arange(n_obj)+1:
+
+    img_paths = glob.glob(s_path + 'obj' + str(i) + '_*.JPG') # all len = 3 but 26 (2), 37 (4), 38 (2)
+    
+    with open(s_path + 'sift/obj' + str(i) + '.npy', 'wb') as f:
+        dps = []
+        for path in img_paths:
+            
+            img = cv2.imread(path, cv2.IMREAD_COLOR)
+            _, dp = siftFeatures(img)
+            dps.append(dp[:1000])
+            
+        np.save(f, np.array(dps))
 
 # client
 c_path = 'Data2/client/'
@@ -48,5 +48,5 @@ for i in np.arange(n_obj)+1:
 
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         _, dp = siftFeatures(img)
-        dp = dp[:300].reshape((1, dp[:300].shape[0], dp[:300].shape[1]))
+        dp = dp[:1000].reshape((1, dp[:1000].shape[0], dp[:1000].shape[1]))
         np.save(f, dp)
