@@ -24,7 +24,7 @@ os.makedirs(s_path + 'sift', exist_ok = True)
 
 for i in np.arange(n_obj)+1:
 
-    img_paths = glob.glob(s_path + 'obj' + str(i) + '_*.JPG') # all len = 3 but 26, 38
+    img_paths = glob.glob(s_path + 'obj' + str(i) + '_*.JPG') # all len = 3 but 26 (2), 37 (4), 38 (2)
 
     with open(s_path + 'sift/obj' + str(i) + '.npy', 'wb') as f:
         dps = []
