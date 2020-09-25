@@ -161,4 +161,4 @@ for b, depth, n_features in config:
         top1List.append(score1)
         top5List.append(score5)
 
-        print('Feature:', n_features, 'b:', b, 'd:', depth, 'r:', r, 't: {:.0f}'.format(t), 'top1:', score1, 'top5:', score5)
+        print('features:', n_features, '\tb:', b, '\td:', depth, '\tr:', r, '\tt: {:.0f}'.format(t), '\ttop1:', score1, '\ttop5:', score5)
