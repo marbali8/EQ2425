@@ -75,7 +75,7 @@ def queryTree(tree, query, leafs):
 def ReadData(path, n_features = 1e5, isClient = False):
 
     data = []
-    for i in range(1, 51):
+    for i in range(1, 50+1): # 50 is number of objects
 
         tmp = '_t' * isClient
         tmp = np.load(path + 'obj' + str(i) + tmp + '.npy', allow_pickle = True)[:, :n_features, :]
@@ -141,11 +141,11 @@ param = [(4, 3), (4, 5), (5, 7)]
 feat = np.arange(100, 1000+100, 100)
 config =[(b, d, f) for (b, d) in param for f in feat]
 
-for b,depth,n_features in config:
+for b, depth, n_features in config:
 
     t1 = time.time()
     data = ReadData('Data2/server/sift/', n_features = n_features, isClient = False)
-    tree,leafs = createTree(data,n_features, b, depth)
+    tree,leafs = createTree(data, n_features, b, depth)
     W, m = computeTF_IDF(tree, leafs, data)
     for r in [1, 0.9, 0.7, 0.5]:
 
