@@ -9,31 +9,34 @@ import numpy as np
 from sklearn.cluster import KMeans
 import time
 
-def recursive(features, idx_features, b, depth, n, n_objects):
+def recursive(features, idx_features, b, depth, n, n_objects, min_var = 0):
 
+    if n % 10000 == 0:
+        print(n)
     data = features[idx_features]
     dList = []
     children = []
     kmeans = None
     obj_array = None
-    if data.shape[0] > b and depth > 1:
+    v = np.mean(np.var(data, axis = 0))
+    if data.shape[0] >= b and depth > 1 and v > min_var:
             kmeans = KMeans(n_clusters = b, random_state = 0).fit(data)
             for i in range(b):
 
                 idx_b = [idx_features[l] for l, ll in enumerate(kmeans.labels_) if ll == i]
-                new_dList = recursive(features, idx_b, b, depth-1, n+len(dList)+1, n_objects)
+                new_dList = recursive(features, idx_b, b, depth-1, n+len(dList)+1, n_objects, min_var = min_var)
 
                 dList += new_dList
                 children.append(new_dList[-1]['i'])
     else:
-        obj_array= np.zeros(n_objects)
+        obj_array = np.zeros(n_objects)
     dList.append({'i': n, 'model': kmeans, 'children': children, 'objects': obj_array})
     return dList
 
-def hi_kmeans(data, b, depth, n_objects):
+def hi_kmeans(data, b, depth, n_objects, min_var = 0):
     dList = []
 
-    dList = recursive(data, np.arange(data.shape[0]), b, depth, 0, n_objects)
+    dList = recursive(data, np.arange(data.shape[0]), b, depth, 0, n_objects, min_var = min_var)
     dList = sorted(dList, key = lambda k: k['i'])
 
     return dList
@@ -92,12 +95,12 @@ def computeScore(q, d):
         s.append(np.linalg.norm(query/np.linalg.norm(query) - d/np.linalg.norm(d), axis = 1))
     return s
 
-def createTree(data, n_features, b, depth):
+def createTree(data, n_features, b, depth, min_var = 0):
 
     sift_list = np.concatenate(data, axis = 0)
     n_objects = data.shape[0]
 
-    tree = hi_kmeans(sift_list, b = b, depth = depth, n_objects = n_objects)
+    tree = hi_kmeans(sift_list, b = b, depth = depth, n_objects = n_objects, min_var = min_var)
     link_word_to_object(tree, data)
     leafs = list((filter(lambda x: len(x['children']) == 0, tree)))
     return tree, leafs
@@ -124,41 +127,41 @@ def computeSortedScore(W, n, m, top = 1):
     sArgSorted = np.argsort(s, axis = 1)[:, :top]
     return sArgSorted
 
-def top1(s):
-
-    i = range(s.shape[0])
-    return np.sum(s[:, 0] == i)
-
 def topN(s, n = 1):
 
-    return np.sum([np.any(i == ss) for i, ss in enumerate(s)])
+    return np.sum([np.any(i == ss) for i, ss in enumerate(s[:, :n])])
     # tree = np.load('Data2/testtree.npy', allow_pickle = True).tolist()
 
 timeList = []
 top1List = []
 top5List = []
-param = [(4, 3), (4, 5), (5, 7)]
-feat = np.arange(100, 1000+100, 100)
-config =[(b, d, f) for (b, d) in param for f in feat]
+# param = [(4, 3), (4, 5), (5, 7)]
+# feat = np.arange(100, 1000+100, 100)
+# config =[(b, d, f) for (b, d) in param for f in feat]
+param = [(5, 7)]
+feat = np.arange(1000, 1000+100, 100)
+min_var = np.arange(10, 100+20, 20)
+config =[(b, d, f, v) for (b, d) in param for f in feat for v in min_var]
 
-for b, depth, n_features in config:
+for b, depth, n_features, v in config:
 
     t1 = time.time()
     data = ReadData('Data2/server/sift/', n_features = n_features, isClient = False)
-    tree,leafs = createTree(data, n_features, b, depth)
+    tree, leafs = createTree(data, n_features, b, depth, min_var = v)
     W, m = computeTF_IDF(tree, leafs, data)
-    for r in [1, 0.9, 0.7, 0.5]:
+    # for r in [1, 0.9, 0.7, 0.5]:
+    for r in [1]:
 
         queryData = ReadData('Data2/client/sift/', n_features = int(n_features*r), isClient = True)
         n = queryTree(tree, queryData, leafs)
 
         s = computeSortedScore(W, n, m, 5)
-        score1 = top1(s)
-        score5 = top5(s)
+        score1 = topN(s)
+        score5 = topN(s, 5)
         t = time.time() - t1
 
         timeList.append(t)
         top1List.append(score1)
         top5List.append(score5)
 
-        print('features:', n_features, '\tb:', b, '\td:', depth, '\tr:', r, '\tt: {:.0f}'.format(t), '\ttop1:', score1, '\ttop5:', score5)
+        print('features:', n_features, '\tb:', b, '\td:', depth, '\tr:', r, '\tt: {:.0f}'.format(t), '\tvar:', v, '\ttop1:', score1, '\ttop5:', score5)
